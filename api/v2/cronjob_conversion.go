@@ -26,6 +26,7 @@ import (
 	"strings"
 
 	"sigs.k8s.io/controller-runtime/pkg/conversion"
+	"tutorial.kubebuilder.io/project/api/v1"
 )
 
 // +kubebuilder:docs-gen:collapse=Imports
