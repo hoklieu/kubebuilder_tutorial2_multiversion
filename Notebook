@@ -1,3 +1,6 @@
+!!!!DON't forget to deploy cert-manager before evety deployment! use this
+ cmctl x install
+
 1. how to test the first one
 first undeploy any running images in local kind cluster
     you can first k get pods to see what are running
