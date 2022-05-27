@@ -18,3 +18,9 @@ in the other, deploy something valid/invalid and check logs (search for "validat
 the latest running image for tutorial 1:
 make deploy IMG=asong51689/tutorial1:0.0.6
 =============================================
+tutorial 2:
+1. don't need to create webhook. that command 
+    kubebuilder create webhook --group batch --version v1 --kind CronJob --conversion
+is only used when there's no webhook, since we already have something, we just add some sections to v1/cronjob_webhook.go
+
+so we'll also manually add a conversion_webhook to v2, it's fairly simple, it's just registering the webhook for v2 with the manager.

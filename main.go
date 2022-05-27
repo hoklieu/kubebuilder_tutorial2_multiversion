@@ -25,6 +25,7 @@ import (
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
+	kbatchv1 "k8s.io/api/batch/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
@@ -41,13 +42,7 @@ import (
 // +kubebuilder:docs-gen:collapse=Imports
 
 /*
-The first difference to notice is that kubebuilder has added the new API
-group's package (`batchv1`) to our scheme.  This means that we can use those
-objects in our controller.
-
-If we would be using any other CRD we would have to add their scheme the same way.
-Builtin types such as Job have their scheme added by `clientgoscheme`.
-*/
+ */
 var (
 	scheme   = runtime.NewScheme()
 	setupLog = ctrl.Log.WithName("setup")
@@ -56,16 +51,16 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
+	utilruntime.Must(kbatchv1.AddToScheme(scheme)) // we've added this ourselves
 	utilruntime.Must(batchv1.AddToScheme(scheme))
 	utilruntime.Must(batchv2.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
-/*
-The other thing that's changed is that kubebuilder has added a block calling our
-CronJob controller's `SetupWithManager` method.
-*/
+// +kubebuilder:docs-gen:collapse=existing setup
 
+/*
+ */
 func main() {
 	/*
 	 */
@@ -98,8 +93,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// +kubebuilder:docs-gen:collapse=old stuff
-
 	if err = (&controllers.CronJobReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
@@ -108,21 +101,25 @@ func main() {
 		os.Exit(1)
 	}
 
-	/*
-		We'll also set up webhooks for our type, which we'll talk about next.
-		We just need to add them to the manager.  Since we might want to run
-		the webhooks separately, or not run them when testing our controller
-		locally, we'll put them behind an environment variable.
+	// +kubebuilder:docs-gen:collapse=existing setup
 
-		We'll just make sure to set `ENABLE_WEBHOOKS=false` when we run locally.
+	/*
+		Our existing call to SetupWebhookWithManager registers our conversion webhooks with the manager, too.
 	*/
 	if os.Getenv("ENABLE_WEBHOOKS") != "false" {
 		if err = (&batchv1.CronJob{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "CronJob")
 			os.Exit(1)
 		}
+		if err = (&batchv2.CronJob{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "CronJob")
+			os.Exit(1)
+		}
 	}
 	//+kubebuilder:scaffold:builder
+
+	/*
+	 */
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
 		setupLog.Error(err, "unable to set up health check")
@@ -138,5 +135,5 @@ func main() {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
 	}
-	// +kubebuilder:docs-gen:collapse=old stuff
+	// +kubebuilder:docs-gen:collapse=existing setup
 }
