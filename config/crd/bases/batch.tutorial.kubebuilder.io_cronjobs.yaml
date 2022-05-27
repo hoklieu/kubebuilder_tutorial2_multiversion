@@ -12,6 +12,8 @@ spec:
     listKind: CronJobList
     plural: cronjobs
     singular: cronjob
+    shortNames:
+    - crdcronjob
   scope: Namespaced
   versions:
   - name: v1
