@@ -1,5 +1,10 @@
 !!!!DON't forget to deploy cert-manager before evety deployment! use this
  cmctl x install
+!!!! If opting to make any changes to the API definitions, then before proceeding, generate the manifests like CRs or CRDs with
+make manifests
+!!!! To test out the controller, we can run it locally against the cluster. Before we do so, though, we’ll need to install our CRDs, as per the quick start. This will automatically update the YAML manifests using controller-tools, if needed:
+
+make install 
 
 1. how to test the first one
 first undeploy any running images in local kind cluster
