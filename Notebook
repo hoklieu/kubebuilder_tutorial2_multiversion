@@ -1,0 +1,20 @@
+1. how to test the first one
+first undeploy any running images in local kind cluster
+    you can first k get pods to see what are running
+    then run this:
+        make undeploy IMG=asong51689/tutorial1:<version>
+
+2. make any changes, then build and push image:
+    make docker-build docker-push IMG=asong51689/tutorial1:<tag>
+
+3. deploy everything (rbacs, roles, deployment, service, configmap, wbconfiguration, cert-manager, etc):
+    make deploy IMG=asong51689/tutorial1:<version>
+
+how to verify:
+in one terminal, follow the logs of the controller pod
+
+in the other, deploy something valid/invalid and check logs (search for "validate" to check webhook logs.)
+
+the latest running image for tutorial 1:
+make deploy IMG=asong51689/tutorial1:0.0.6
+=============================================
