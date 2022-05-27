@@ -24,3 +24,5 @@ tutorial 2:
 is only used when there's no webhook, since we already have something, we just add some sections to v1/cronjob_webhook.go
 
 so we'll also manually add a conversion_webhook to v2, it's fairly simple, it's just registering the webhook for v2 with the manager.
+
+so far seems like if start from tutorial 1, there's not too much needs to change (but be careful of the details)
